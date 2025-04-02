@@ -5,10 +5,10 @@ def generate_readme():
     with open("README.txt", "w") as f:
         f.write("API Endpoints:\n\n")
         for route in app.routes:
-            # Skip the docs route to avoid listing it
+            # skip certain files
             if route.name == "Swagger UI":
                 continue
-            # Correctly accessing the 'methods' attribute for HTTP methods
+            # write to file
             f.write(f"{', '.join(route.methods)} {route.path}\n")
 
         f.write("\nFor more detailed documentation, please visit: ")
