@@ -17,10 +17,10 @@ def test_get_all_products():
 
 def test_add_new_product():
     product = {
-        "ProductID": "AUTO999",
+        "Product ID": "AUTO999",
         "Name": "Test Product",
-        "UnitPrice": 19.99,
-        "StockQuantity": 50,
+        "Unit Price": 19.99,
+        "Stock Quantity": 50,
         "Description": "A test product.",
     }
     response = client.post("/addNew", json=product)
