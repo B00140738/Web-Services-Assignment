@@ -39,7 +39,9 @@ def test_starts_with():
 
 
 def test_paginate():
-    response = client.get("/paginate", params={"start_id": "AUTO001", "end_id": "AUTO010"})
+    response = client.get(
+    "/paginate", params={"start_id": 1, "end_id": 10}
+    )
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
