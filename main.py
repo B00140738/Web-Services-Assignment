@@ -80,5 +80,5 @@ def convert_to_euro(product_id: str):
         raise HTTPException(status_code=500, detail="Currency conversion failed")
 
     exchange_rate = response.json()["rates"].get("EUR", 1)
-    price_in_euro = product["UnitPrice"] * exchange_rate
+    price_in_euro = product["Unit Price"] * exchange_rate
     return {"ProductID": product_id, "PriceInEuro": round(price_in_euro, 2)}
