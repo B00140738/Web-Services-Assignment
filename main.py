@@ -12,11 +12,15 @@ collection = db.web_project
 
 
 class Product(BaseModel):
-    ProductID: int
+    ProductID: str
     Name: str
     UnitPrice: float
     StockQuantity: int
     Description: str
+
+    class Config:
+        # turn ProductID into "Product ID" so we can find it using the /getSingleProduct API
+        alias_generator = lambda s: s.replace("ID", " ID")
 
 
 @app.get("/getSingleProduct")
@@ -37,12 +41,12 @@ def get_all():
 def add_new_product(product: Product):
     if collection.find_one({"Product ID": product.ProductID}):
         raise HTTPException(status_code=400, detail="Product already exists")
-    collection.insert_one(product.dict())
+    collection.insert_one(product.dict(by_alias=True))
     return {"message": "Product added successfully"}
 
 
 @app.delete("/deleteOne")
-def delete_one(product_id: int):
+def delete_one(product_id: str):
     result = collection.delete_one({"Product ID": product_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -60,11 +64,13 @@ def starts_with(letter: str):
 
 
 @app.get("/paginate")
-def paginate(start_id: int, end_id: int):
+def paginate(start_id: str, end_id: str):
     products = list(
         collection.find(
-            {"ProductID": {"$gte": start_id, "$lte": end_id}}, {"_id": 0}
-        ).limit(10)
+            {
+                "Product ID": {"$gte": start_id, "$lte": end_id}
+            }, {"_id": 0}
+        ).sort("ProductID", 1).limit(10)
     )
     return products
 
@@ -80,5 +86,6 @@ def convert_to_euro(product_id: str):
         raise HTTPException(status_code=500, detail="Currency conversion failed")
 
     exchange_rate = response.json()["rates"].get("EUR", 1)
-    price_in_euro = product["Unit Price"] * exchange_rate
+    price_in_euro = product["UnitPrice"] * exchange_rate  # 🔥 FIXED
     return {"ProductID": product_id, "PriceInEuro": round(price_in_euro, 2)}
+
