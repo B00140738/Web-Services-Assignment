@@ -20,8 +20,8 @@ class Product(BaseModel):
 
 
 @app.get("/getSingleProduct")
-def get_single_product(product_id: int):
-    product = collection.find_one({"ProductID": product_id}, {"_id": 0})
+def get_single_product(product_id: str):
+    product = collection.find_one({"Product ID": product_id}, {"_id": 0})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
@@ -35,7 +35,7 @@ def get_all():
 
 @app.post("/addNew")
 def add_new_product(product: Product):
-    if collection.find_one({"ProductID": product.ProductID}):
+    if collection.find_one({"Product ID": product.ProductID}):
         raise HTTPException(status_code=400, detail="Product already exists")
     collection.insert_one(product.dict())
     return {"message": "Product added successfully"}
@@ -43,7 +43,7 @@ def add_new_product(product: Product):
 
 @app.delete("/deleteOne")
 def delete_one(product_id: int):
-    result = collection.delete_one({"ProductID": product_id})
+    result = collection.delete_one({"Product ID": product_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
     return {"message": "Product deleted successfully"}
@@ -70,8 +70,8 @@ def paginate(start_id: int, end_id: int):
 
 
 @app.get("/convert")
-def convert_to_euro(product_id: int):
-    product = collection.find_one({"ProductID": product_id}, {"_id": 0})
+def convert_to_euro(product_id: str):
+    product = collection.find_one({"Product ID": product_id}, {"_id": 0})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
 

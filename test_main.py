@@ -5,7 +5,7 @@ client = TestClient(app)
 
 
 def test_get_single_product():
-    response = client.get("/getSingleProduct", params={"product_id": 1})
+    response = client.get("/getSingleProduct", params={"product_id": "AUTO001"})
     assert response.status_code in [200, 404]
 
 
@@ -17,7 +17,7 @@ def test_get_all_products():
 
 def test_add_new_product():
     product = {
-        "ProductID": 999,
+        "ProductID": "AUTO999",
         "Name": "Test Product",
         "UnitPrice": 19.99,
         "StockQuantity": 50,
@@ -28,7 +28,7 @@ def test_add_new_product():
 
 
 def test_delete_product():
-    response = client.delete("/deleteOne", params={"product_id": 999})
+    response = client.delete("/deleteOne", params={"product_id": "AUTO999"})
     assert response.status_code in [200, 404]
 
 
@@ -45,5 +45,5 @@ def test_paginate():
 
 
 def test_convert_to_euro():
-    response = client.get("/convert", params={"product_id": 1})
+    response = client.get("/convert", params={"product_id": "AUTO001"})
     assert response.status_code in [200, 404]
