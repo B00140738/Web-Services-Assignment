@@ -19,8 +19,9 @@ class Product(BaseModel):
     Description: str
 
     class Config:
-        # turn ProductID into "Product ID" so we can find it using the /getSingleProduct API
-        alias_generator = lambda s: s.replace("ID", " ID")
+        @staticmethod
+        def alias_generator(s: str) -> str:
+            return s.replace("ID", " ID")
 
 
 @app.get("/getSingleProduct")
@@ -67,9 +68,7 @@ def starts_with(letter: str):
 def paginate(start_id: str, end_id: str):
     products = list(
         collection.find(
-            {
-                "Product ID": {"$gte": start_id, "$lte": end_id}
-            }, {"_id": 0}
+            {"Product ID": {"$gte": start_id, "$lte": end_id}}, {"_id": 0}
         ).sort("ProductID", 1).limit(10)
     )
     return products
@@ -86,6 +85,5 @@ def convert_to_euro(product_id: str):
         raise HTTPException(status_code=500, detail="Currency conversion failed")
 
     exchange_rate = response.json()["rates"].get("EUR", 1)
-    price_in_euro = product["UnitPrice"] * exchange_rate  # 🔥 FIXED
+    price_in_euro = product["UnitPrice"] * exchange_rate
     return {"ProductID": product_id, "PriceInEuro": round(price_in_euro, 2)}
-
